@@ -14,6 +14,7 @@ func main() {
 	g := gin.Default()
 	// functions
 	g.GET("/openOrders", controller.GetOpenOrders)
+	g.GET("/createOrder", controller.CreateOrder)
 	// empty returns
 	g.GET("/", func(c *gin.Context) { c.String(200, "") })
 	g.GET("/robots.txt", func(c *gin.Context) { c.String(200, "User-agent: *\nDisallow: *") })

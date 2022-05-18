@@ -1,8 +1,6 @@
 package api
 
 import (
-	"context"
-
 	binance "github.com/adshao/go-binance/v2"
 
 	"github.com/adshao/go-binance/v2/futures"
