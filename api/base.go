@@ -33,12 +33,3 @@ func SetSecretKey(s string) {
 	secretKey = s
 	return
 }
-
-func ListOpenOrders() (openOrders []*binance.Order) {
-	openOrders, err := client.NewListOpenOrdersService().Symbol(tradePair).
-		Do(context.Background())
-	if err != nil {
-		panic(err)
-	}
-	return
-}
