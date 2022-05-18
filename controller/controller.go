@@ -23,6 +23,8 @@ func CreateOrder(c *gin.Context) {
 		isLong = true
 	} else if f.Direction == "short" {
 		isLong = false
+	} else {
+		panic("direction incorrect")
 	}
 	c.JSON(200, api.CreateOrder(isLong, f.Quantity))
 	return
