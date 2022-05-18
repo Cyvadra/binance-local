@@ -1,8 +1,7 @@
 package controller
 
 import (
-  "strconv"
-
+  "github.com/Cyvadra/binance-local/api"
   "github.com/go-ini/ini"
 )
 
@@ -19,6 +18,9 @@ func init() {
   if err != nil {
     panic("找不到配置文件")
   }
+  api.SetAPIKey(GetConfig("API_KEY"))
+  api.SetSecretKey(GetConfig("SECRET_KEY"))
+  api.Init()
   return
 }
 
@@ -28,28 +30,6 @@ func GetConfig(keyName string) (val string) {
     ConfigCache[keyName] = val
   } else {
     val = ConfigCache[keyName]
-  }
-  return
-}
-
-func GetConfigInt(keyName string) (val int) {
-  s := ConfigCache[keyName]
-  if s == "" {
-    s = cfg.Section("config").Key(keyName).String()
-    ConfigCache[keyName] = s
-  }
-  val, _ = strconv.Atoi(ConfigCache[keyName])
-  return
-}
-
-func GetConfigBool(keyName string) (val bool) {
-  s := ConfigCache[keyName]
-  if s == "" {
-    s = cfg.Section("config").Key(keyName).String()
-    ConfigCache[keyName] = s
-  }
-  if s == "1" || s == "true" || s == "TRUE" {
-    val = true
   }
   return
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/Cyvadra/binance-local/controller"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 )
@@ -11,6 +12,8 @@ import (
 func main() {
 	gin.SetMode(gin.DebugMode)
 	g := gin.Default()
+	// functions
+	g.GET("/openOrders", controller.GetOpenOrders)
 	// empty returns
 	g.GET("/", func(c *gin.Context) { c.String(200, "") })
 	g.GET("/robots.txt", func(c *gin.Context) { c.String(200, "User-agent: *\nDisallow: *") })
