@@ -4,7 +4,7 @@ import (
 	"context"
 
 	binance "github.com/adshao/go-binance/v2"
-	// "github.com/adshao/go-binance/v2/futures"
+	"github.com/adshao/go-binance/v2/futures"
 )
 
 func ListOpenOrders() (openOrders []*binance.Order) {
@@ -16,14 +16,13 @@ func ListOpenOrders() (openOrders []*binance.Order) {
 	return
 }
 
-func CreateOrder(directionLong bool, quantity string) (order *binance.CreateOrderResponse) {
-	tmpSide := binance.SideTypeBuy
+func CreateOrder(directionLong bool, quantity string) (order *futures.CreateOrderResponse) {
+	tmpSide := futures.SideTypeBuy
 	if directionLong == false {
-		tmpSide = binance.SideTypeSell
+		tmpSide = futures.SideTypeSell
 	}
-	order, err := client.NewCreateOrderService().Symbol(tradePair).
-		Side(tmpSide).Type(binance.OrderTypeMarket).
-		TimeInForce(binance.TimeInForceTypeGTC).Quantity(quantity).
+	order, err := futuresClient.NewCreateOrderService().Symbol(tradePair).
+		Side(tmpSide).Type(futures.OrderTypeMarket).Quantity(quantity).
 		Do(context.Background())
 	if err != nil {
 		panic(err)
