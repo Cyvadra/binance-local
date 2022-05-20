@@ -11,10 +11,13 @@ type cachePosition struct {
 	Quantity  string
 }
 
-var CurrentPosition *cachePosition
+var (
+	CurrentPosition       *cachePosition
+	emptyPositionQuantity string = "0.000"
+)
 
 func init() {
-	CurrentPosition = &cachePosition{true, "0.000"}
+	CurrentPosition = &cachePosition{true, emptyPositionQuantity}
 }
 
 func ListOrders() (currentOrders []*futures.Order) {
@@ -27,12 +30,17 @@ func ListOrders() (currentOrders []*futures.Order) {
 }
 
 func CloseAllOrders() (err error) {
-	if CurrentPosition.Quantity != "0.000" {
+	currentOrders, err := futuresClient.NewListOpenOrdersService().
+		Symbol(tradePair).Do(context.Background())
+	if err != nil {
+		panic(err)
+	}
+	if len(currentOrders) == 2 && CurrentPosition.Quantity != emptyPositionQuantity {
 		err = CreateSimpleOrder(!CurrentPosition.Direction, CurrentPosition.Quantity)
 		if err != nil {
 			return
 		} else {
-			CurrentPosition.Quantity = "0.000"
+			CurrentPosition.Quantity = emptyPositionQuantity
 		}
 	}
 	err = futuresClient.NewCancelAllOpenOrdersService().Symbol(tradePair).Do(context.Background())
