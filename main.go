@@ -13,7 +13,7 @@ func main() {
 	gin.SetMode(gin.DebugMode)
 	g := gin.Default()
 	// functions
-	g.GET("/openOrders", controller.GetOpenOrders)
+	g.GET("/getOrders", controller.GetOrders)
 	g.GET("/createOrder", controller.CreateOrder)
 	// empty returns
 	g.GET("/", func(c *gin.Context) { c.String(200, "") })

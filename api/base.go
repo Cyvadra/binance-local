@@ -12,13 +12,11 @@ var (
 	tradePair string = "BTCUSDT"
 )
 
-var (
-	client        *binance.Client
-	futuresClient *futures.Client
-)
+// client        *binance.Client
+var futuresClient *futures.Client
 
 func Init() {
-	client = binance.NewClient(apiKey, secretKey)
+	// client = binance.NewClient(apiKey, secretKey)
 	futuresClient = binance.NewFuturesClient(apiKey, secretKey) // USDT-M Futures
 }
 
