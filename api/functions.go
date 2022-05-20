@@ -20,12 +20,9 @@ func init() {
 	CurrentPosition = &cachePosition{true, emptyPositionQuantity}
 }
 
-func ListOrders() (currentOrders []*futures.Order) {
-	currentOrders, err := futuresClient.NewListOpenOrdersService().
+func ListOrders() (currentOrders []*futures.Order, err error) {
+	currentOrders, err = futuresClient.NewListOpenOrdersService().
 		Symbol(tradePair).Do(context.Background())
-	if err != nil {
-		panic(err)
-	}
 	return
 }
 
@@ -33,7 +30,7 @@ func CloseAllOrders() (err error) {
 	currentOrders, err := futuresClient.NewListOpenOrdersService().
 		Symbol(tradePair).Do(context.Background())
 	if err != nil {
-		panic(err)
+		return
 	}
 	if len(currentOrders) == 2 && CurrentPosition.Quantity != emptyPositionQuantity {
 		err = CreateSimpleOrder(!CurrentPosition.Direction, CurrentPosition.Quantity)

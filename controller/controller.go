@@ -12,14 +12,21 @@ type FormCreateOrder struct {
 	TakeProfit string `form:"take_profit"`
 }
 
-var cacheForm *FormCreateOrder
+var (
+	cacheForm        *FormCreateOrder
+	defaultRetString string = "fine"
+)
 
 func init() {
 	cacheForm = &FormCreateOrder{}
 }
 
 func GetOrders(c *gin.Context) {
-	c.JSON(200, api.ListOrders())
+	currentOrders, err := api.ListOrders()
+	if err != nil {
+		c.String(200, err.Error())
+	}
+	c.JSON(200, currentOrders)
 	return
 }
 
@@ -28,7 +35,7 @@ func CloseAllOrders(c *gin.Context) {
 	if err != nil {
 		c.String(200, err.Error())
 	} else {
-		c.String(200, "ok")
+		c.String(200, defaultRetString)
 	}
 	return
 }
@@ -41,7 +48,7 @@ func CreateOrder(c *gin.Context) {
 		return
 	}
 	if cacheForm.Direction == f.Direction && cacheForm.Quantity == f.Quantity {
-		c.String(200, "done already")
+		c.String(200, defaultRetString)
 		return
 	} else {
 		cacheForm = f
@@ -55,6 +62,10 @@ func CreateOrder(c *gin.Context) {
 		c.String(500, "direction incorrect")
 		return
 	}
-	c.JSON(200, api.CreateOrder(isLong, f.Quantity, f.StopLoss, f.TakeProfit))
+	err = api.CreateOrder(isLong, f.Quantity, f.StopLoss, f.TakeProfit)
+	if err != nil {
+		c.String(200, err.Error())
+	}
+	c.String(200, defaultRetString)
 	return
 }
