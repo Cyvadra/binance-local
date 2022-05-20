@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"time"
 
 	"github.com/adshao/go-binance/v2/futures"
 )
@@ -10,6 +11,28 @@ func ListOrders() (openOrders []*futures.Order) {
 	openOrders, err := futuresClient.NewListOrdersService().Symbol(tradePair).Do(context.Background())
 	if err != nil {
 		panic(err)
+	}
+	return
+}
+
+func CloseAllOrders() (err error) {
+	openOrders, err := futuresClient.NewListOrdersService().Symbol(tradePair).Do(context.Background())
+	if err != nil {
+		return
+	}
+	tmpService := futuresClient.NewCancelOrderService().Symbol(tradePair)
+	for _, ord := range openOrders {
+		_, err = tmpService.OrderID(ord.OrderID).Do(context.Background())
+		if err != nil {
+			return
+		}
+	}
+	time.Sleep(500 * time.Millisecond)
+	openOrders, err = futuresClient.NewListOrdersService().Symbol(tradePair).Do(context.Background())
+	if err != nil {
+		return
+	} else if len(openOrders) > 0 {
+		panic("order not cancelled")
 	}
 	return
 }

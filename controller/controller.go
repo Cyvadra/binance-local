@@ -23,6 +23,12 @@ func GetOrders(c *gin.Context) {
 	return
 }
 
+func CloseAllOrders(c *gin.Context) {
+	err := api.CloseAllOrders()
+	c.String(200, err.Error())
+	return
+}
+
 func CreateOrder(c *gin.Context) {
 	f := &FormCreateOrder{}
 	err := c.ShouldBind(f)

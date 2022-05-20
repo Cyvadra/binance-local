@@ -14,6 +14,7 @@ func main() {
 	g := gin.Default()
 	// functions
 	g.GET("/getOrders", controller.GetOrders)
+	g.GET("/closeAllOrders", controller.CloseAllOrders)
 	g.GET("/createOrder", controller.CreateOrder)
 	// empty returns
 	g.GET("/", func(c *gin.Context) { c.String(200, "") })
