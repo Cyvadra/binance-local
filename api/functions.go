@@ -26,7 +26,6 @@ func CreateOrder(directionLong bool, quantity, stopLoss, takeProfit string) (err
 		Side(tmpSide).
 		Type(futures.OrderTypeMarket).
 		Quantity(quantity).
-		StopPrice(stopLoss).
 		Do(context.Background())
 	if err != nil {
 		return
@@ -38,7 +37,6 @@ func CreateOrder(directionLong bool, quantity, stopLoss, takeProfit string) (err
 		WorkingType(futures.WorkingTypeMarkPrice).
 		PositionSide(futures.PositionSideTypeBoth).
 		ClosePosition(true).
-		ReduceOnly(true).
 		StopPrice(stopLoss).
 		Do(context.Background())
 	if err != nil {
@@ -51,7 +49,6 @@ func CreateOrder(directionLong bool, quantity, stopLoss, takeProfit string) (err
 		WorkingType(futures.WorkingTypeMarkPrice).
 		PositionSide(futures.PositionSideTypeBoth).
 		ClosePosition(true).
-		ReduceOnly(true).
 		StopPrice(takeProfit).
 		Do(context.Background())
 	return
