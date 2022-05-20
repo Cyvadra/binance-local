@@ -5,16 +5,22 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetOrders(c *gin.Context) {
-	c.JSON(200, api.ListOrders())
-	return
-}
-
 type FormCreateOrder struct {
 	Direction  string `form:"direction"`
 	Quantity   string `form:"quantity"`
 	StopLoss   string `form:"stop_loss"`
 	TakeProfit string `form:"take_profit"`
+}
+
+var cacheForm *FormCreateOrder
+
+func init() {
+	cacheForm = &FormCreateOrder{}
+}
+
+func GetOrders(c *gin.Context) {
+	c.JSON(200, api.ListOrders())
+	return
 }
 
 func CreateOrder(c *gin.Context) {
@@ -23,6 +29,12 @@ func CreateOrder(c *gin.Context) {
 	if err != nil {
 		c.JSON(500, err)
 		return
+	}
+	if cacheForm.Direction == f.Direction && cacheForm.Quantity == f.Quantity {
+		c.String(200, "done already")
+		return
+	} else {
+		cacheForm = f
 	}
 	isLong := true
 	if f.Direction == "long" {
