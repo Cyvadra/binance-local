@@ -25,7 +25,11 @@ func GetOrders(c *gin.Context) {
 
 func CloseAllOrders(c *gin.Context) {
 	err := api.CloseAllOrders()
-	c.String(200, err.Error())
+	if err != nil {
+		c.String(200, err.Error())
+	} else {
+		c.String(200, "ok")
+	}
 	return
 }
 

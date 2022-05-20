@@ -2,13 +2,24 @@ package api
 
 import (
 	"context"
-	"time"
 
 	"github.com/adshao/go-binance/v2/futures"
 )
 
-func ListOrders() (openOrders []*futures.Order) {
-	openOrders, err := futuresClient.NewListOrdersService().Symbol(tradePair).Do(context.Background())
+type cachePosition struct {
+	Direction bool
+	Quantity  string
+}
+
+var CurrentPosition *cachePosition
+
+func init() {
+	CurrentPosition = &cachePosition{true, "0.000"}
+}
+
+func ListOrders() (currentOrders []*futures.Order) {
+	currentOrders, err := futuresClient.NewListOpenOrdersService().
+		Symbol(tradePair).Do(context.Background())
 	if err != nil {
 		panic(err)
 	}
@@ -16,24 +27,15 @@ func ListOrders() (openOrders []*futures.Order) {
 }
 
 func CloseAllOrders() (err error) {
-	openOrders, err := futuresClient.NewListOrdersService().Symbol(tradePair).Do(context.Background())
-	if err != nil {
-		return
-	}
-	tmpService := futuresClient.NewCancelOrderService().Symbol(tradePair)
-	for _, ord := range openOrders {
-		_, err = tmpService.OrderID(ord.OrderID).Do(context.Background())
+	if CurrentPosition.Quantity != "0.000" {
+		err = CreateSimpleOrder(!CurrentPosition.Direction, CurrentPosition.Quantity)
 		if err != nil {
 			return
+		} else {
+			CurrentPosition.Quantity = "0.000"
 		}
 	}
-	time.Sleep(500 * time.Millisecond)
-	openOrders, err = futuresClient.NewListOrdersService().Symbol(tradePair).Do(context.Background())
-	if err != nil {
-		return
-	} else if len(openOrders) > 0 {
-		panic("order not cancelled")
-	}
+	err = futuresClient.NewCancelAllOpenOrdersService().Symbol(tradePair).Do(context.Background())
 	return
 }
 
@@ -73,6 +75,25 @@ func CreateOrder(directionLong bool, quantity, stopLoss, takeProfit string) (err
 		PositionSide(futures.PositionSideTypeBoth).
 		ClosePosition(true).
 		StopPrice(takeProfit).
+		Do(context.Background())
+	if err != nil {
+		return
+	}
+	CurrentPosition.Direction = directionLong
+	CurrentPosition.Quantity = quantity
+	return
+}
+
+func CreateSimpleOrder(directionLong bool, quantity string) (err error) {
+	tmpSide := futures.SideTypeBuy
+	if directionLong == false {
+		tmpSide = futures.SideTypeSell
+	}
+	tmpService := futuresClient.NewCreateOrderService().Symbol(tradePair)
+	_, err = tmpService.
+		Side(tmpSide).
+		Type(futures.OrderTypeMarket).
+		Quantity(quantity).
 		Do(context.Background())
 	return
 }
