@@ -9,7 +9,7 @@ import (
 var (
 	apiKey    string
 	secretKey string
-	tradePair string = "BTCUSDT"
+	tradePair string = "BTCBUSD"
 )
 
 // client        *binance.Client
