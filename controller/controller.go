@@ -25,8 +25,9 @@ func GetOrders(c *gin.Context) {
 	currentOrders, err := api.ListOrders()
 	if err != nil {
 		c.String(200, err.Error())
+	} else {
+		c.JSON(200, currentOrders)
 	}
-	c.JSON(200, currentOrders)
 	return
 }
 
@@ -67,5 +68,15 @@ func CreateOrder(c *gin.Context) {
 		c.String(200, err.Error())
 	}
 	c.String(200, defaultRetString)
+	return
+}
+
+func QueryBalance(c *gin.Context) {
+	currentBalance, err := api.QueryBalance()
+	if err != nil {
+		c.String(200, err.Error())
+	} else {
+		c.JSON(200, currentBalance)
+	}
 	return
 }

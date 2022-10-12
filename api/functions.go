@@ -102,3 +102,8 @@ func CreateSimpleOrder(directionLong bool, quantity string) (err error) {
 		Do(context.Background())
 	return
 }
+
+func QueryBalance() (listBalance []*futures.Balance, err error) {
+	currentBalance, err := futuresClient.NewGetBalanceService().Do(context.Background())
+	return currentBalance, err
+}
