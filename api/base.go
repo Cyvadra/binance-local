@@ -9,7 +9,7 @@ import (
 var (
 	apiKey    string
 	secretKey string
-	tradePair string = "BTCBUSD"
+	tradePair string
 )
 
 // client        *binance.Client
@@ -27,5 +27,10 @@ func SetAPIKey(s string) {
 
 func SetSecretKey(s string) {
 	secretKey = s
+	return
+}
+
+func SetTradePair(s string) {
+	tradePair = s
 	return
 }

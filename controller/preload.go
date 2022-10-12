@@ -20,6 +20,7 @@ func init() {
   }
   api.SetAPIKey(GetConfig("API_KEY"))
   api.SetSecretKey(GetConfig("SECRET_KEY"))
+  api.SetTradePair(GetConfig("TRADE_PAIR"))
   api.Init()
   return
 }
